@@ -9,3 +9,11 @@ create sdf file from urdf file
 ```
 gz sdf -p segway.urdf > segway.sdf
 ```
+To view all gazebo topics
+```
+gz topic -l
+```
+To view for all available options
+```
+gz topic -h
+```
