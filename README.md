@@ -20,3 +20,11 @@ gz topic -h
 ```
 xacro segway.urdf.xacro > segway.urdf
 ```
+
+```
+gz service -s /world/default/set_pose/blocking \
+  --reqtype gz.msgs.Pose \
+  --reptype gz.msgs.Boolean \
+  --timeout 2000 \
+  --req "name: 'segway' position: {x: 9.0 y: 0.0 z: 0.05} orientation: {x: 0.0 y: 0.0 z: 0.707 w: 0.707}"
+```
