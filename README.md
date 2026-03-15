@@ -21,6 +21,7 @@ gz topic -h
 xacro segway.urdf.xacro > segway.urdf
 ```
 
+For directly using segway.urdf.xacro instead of .sdf file
 ```
 gz service -s /world/default/set_pose/blocking \
   --reqtype gz.msgs.Pose \
