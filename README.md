@@ -17,3 +17,6 @@ To view for all available options
 ```
 gz topic -h
 ```
+```
+xacro segway.urdf.xacro > segway.urdf
+```
