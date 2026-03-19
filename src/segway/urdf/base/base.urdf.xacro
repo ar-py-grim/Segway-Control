@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find segway)/urdf/base/base.gazebo.xacro"/>
+  
+  <xacro:macro name="base_v0" params="parent *joint_origin">
+	<joint name="base_link_joint" type="fixed">
+	  <xacro:insert_block name="joint_origin"/>
+	  <parent link="${parent}"/>
+	  <child link="base_link"/>
+	</joint>
+
+	<link name="base_link">
+	  <visual>
+		<geometry>
+		  <mesh filename="file://$(find segway)/models/segway/meshes/DAE/base/body.dae"/>
+		</geometry>
+	  </visual>
+	  <collision>
+		<geometry>
+		  <mesh filename="file://$(find segway)/models/segway/meshes/STL/base/body.stl"/>
+		</geometry>
+	  </collision>
+	  <inertial>
+		<origin xyz="0.0054 0 0.5970"/>
+		<mass value="80.0"/>
+		<inertia ixx="35.478547" ixy="0.000003" ixz="-0.416935" iyy="35.553746" iyz="0.000012" izz="1.448630"/>
+	  </inertial>
+	</link>
+  </xacro:macro>
+  
+</robot>

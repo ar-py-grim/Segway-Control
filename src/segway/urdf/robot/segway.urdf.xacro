@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<robot name="segway" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="M_PI" value="3.14159274"/>
+
+  <xacro:include filename="$(find segway)/urdf/base/base.urdf.xacro"/>
+  <xacro:include filename="$(find segway)/urdf/wheel/wheel.urdf.xacro"/>
+  <xacro:include filename="$(find segway)/urdf/IMU/IMU.urdf.xacro"/>
+
+  <!-- =============== Link & Joint =============== -->
+  <link name="base_footprint"/>
+  <xacro:base_v0 parent="base_footprint">
+    <origin xyz="0 0 0"/>
+  </xacro:base_v0>
+
+  <!-- Right Wheel -->
+  <xacro:rear_wheel_v0 prefix="right" parent="base_link">
+    <origin xyz="0 0.238506 0.297322" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </xacro:rear_wheel_v0>
+  
+  <!-- Left Wheel -->
+  <xacro:rear_wheel_v0 prefix="left" parent="base_link">
+    <origin xyz="0 -0.238506 0.297322" rpy="0 0 ${M_PI}"/>
+    <axis xyz="0 -1 0"/>
+  </xacro:rear_wheel_v0>
+
+  <xacro:imu_v0 parent="base_link">
+    <origin xyz="0 0 0.297322" rpy="0 0 0"/>
+  </xacro:imu_v0>
+
+  <!-- =============== Gazebo =============== -->
+  <gazebo>
+    <plugin filename="gz-sim-diff-drive-system"
+            name="gz::sim::systems::DiffDrive">
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      <wheel_separation>0.477012</wheel_separation>  <!-- 2*0.238506 m = 0.477012 m -->
+      <wheel_radius>0.28</wheel_radius>
+      <!-- <max_wheel_torque>10.0</max_wheel_torque>
+      <max_wheel_acceleration>10.0</max_wheel_acceleration> -->
+      <max_wheel_torque>5.0</max_wheel_torque>    
+      <max_wheel_acceleration>5.0</max_wheel_acceleration>
+      <topic>/cmd_vel</topic>
+      <odom_topic>/odom</odom_topic>
+      <frame_id>odom</frame_id>
+      <child_frame_id>base_link</child_frame_id>
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+    </plugin>
+
+    <plugin filename="gz-sim-joint-state-publisher-system"
+            name="gz::sim::systems::JointStatePublisher">
+      <joint_name>left_wheel_joint</joint_name>
+      <joint_name>right_wheel_joint</joint_name>
+    </plugin>
+  </gazebo>
+
+  <xacro:base_gazebo_v0/>
+  <xacro:wheel_gazebo_v0 prefix="right"/>
+  <xacro:wheel_gazebo_v0 prefix="left"/>
+  <xacro:imu_gazebo_v0/>
+
+</robot>
