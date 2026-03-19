@@ -1,4 +1,4 @@
-#!/lerobot_env/bin/env python3
+#!/usr/bin/env python3
 
 """
 Calculate inertia tensors from mesh files for URDF.
