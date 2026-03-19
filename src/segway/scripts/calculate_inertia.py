@@ -5,7 +5,6 @@ Calculate inertia tensors from mesh files for URDF.
 """
 
 import trimesh
-import numpy as np
 
 BASE_STL  = 'segway/models/segway/meshes/STL/base/body.stl'
 WHEEL_STL = 'segway/models/segway/meshes/STL/wheel/wheel_sim.stl'
