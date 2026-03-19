@@ -1,3 +1,6 @@
+Packages used
+pynput == 1.7.6
+
 To run the simulation use
 ```
 ros2 launch segway segway_sim.launch.py 
