@@ -1,5 +1,6 @@
-Packages used
-pynput == 1.7.6
+Packages used </br>
+1. pynput == 1.7.6
+2. deap == 1.3.1
 
 To run the simulation use
 ```
