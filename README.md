@@ -15,5 +15,5 @@ export __NV_PRIME_RENDER_OFFLOAD=1
 export __GLX_VENDOR_LIBRARY_NAME=nvidia
 ```
 ### References
-**Gazebo Harmonic:** https://gazebosim.org/docs/harmonic/troubleshooting/
+**Gazebo Harmonic:** https://gazebosim.org/docs/harmonic/troubleshooting/ </br>
 **Demo link:** https://youtu.be/wS8NtGUcq1I
