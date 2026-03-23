@@ -39,8 +39,8 @@ class Segway(Node):
         with keys_lock: held = frozenset(held_keys)
         target_pitch = PITCH_STEP  if keyboard.KeyCode.from_char('w') in held else \
                       -PITCH_STEP  if keyboard.KeyCode.from_char('s') in held else 0.0
-        target_w     = TURN_SPEED  if keyboard.KeyCode.from_char('a') in held else \
-                      -TURN_SPEED  if keyboard.KeyCode.from_char('d') in held else 0.0
+        target_w     = -TURN_SPEED  if keyboard.KeyCode.from_char('a') in held else \
+                      TURN_SPEED  if keyboard.KeyCode.from_char('d') in held else 0.0
 
         err = pitch - target_pitch
         self.integral+= (err+self.last_err)*dt/2
