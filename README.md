@@ -3,6 +3,11 @@ Packages used </br>
 2. deap == 1.3.1
 3. trimesh == 4.11.3
 
+To run the simulation to get PID coefficients
+```
+ros2 launch segway segway_sim.launch.py train:=true 
+```
+
 To run the simulation use
 ```
 ros2 launch segway segway_sim.launch.py 
