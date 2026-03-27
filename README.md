@@ -14,6 +14,12 @@ ros2 launch segway segway_sim.launch.py
 ```
 <img width="3072" height="1524" alt="Screenshot from 2026-03-22 22-55-04" src="https://github.com/user-attachments/assets/76abb70c-2ec3-4490-b50f-8830d3063a9e" />
 
+To run the simulation use
+```
+ros2 launch segway results.launch.py 
+```
+<img width="2164" height="1158" alt="image" src="https://github.com/user-attachments/assets/80ee8bc8-c63d-4f10-9e40-f99f7a3a8d31" />
+
 For Gazebo Harmonic on system which has hybrid gpus add below lines in .bashrc
 ```
 export __NV_PRIME_RENDER_OFFLOAD=1
