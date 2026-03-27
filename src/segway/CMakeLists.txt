@@ -36,6 +36,7 @@ install(DIRECTORY
 install(PROGRAMS
   scripts/segway_control.py
   scripts/optimize_pid.py
+  scripts/plot_results.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
