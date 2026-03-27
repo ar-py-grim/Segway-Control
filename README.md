@@ -2,6 +2,7 @@ Packages used </br>
 1. pynput == 1.7.6
 2. deap == 1.3.1
 3. trimesh == 4.11.3
+4. matplotlib == 3.6.3
 
 To run the simulation to get PID coefficients
 ```
