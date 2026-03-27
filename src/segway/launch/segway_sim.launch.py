@@ -7,10 +7,13 @@ from launch import LaunchDescription
 from launch.substitutions import LaunchConfiguration
 from launch.actions import IncludeLaunchDescription, AppendEnvironmentVariable
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.conditions import IfCondition, UnlessCondition
 from launch_ros.actions import Node
 
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+    train = LaunchConfiguration('train', default='false')
+
     pkg = get_package_share_directory('segway')
     pkg_gazebo_ros = get_package_share_directory('ros_gz_sim')
     world = os.path.join(pkg, 'worlds', 'segway_world.world.sdf')
@@ -19,16 +22,22 @@ def generate_launch_description():
     # reading .urdf.xacro
     xacro_file = os.path.join(pkg, 'urdf', 'robot', 'segway.urdf.xacro')
     robot_desc = xacro.process_file(xacro_file).toxml()
+    gz_sim_launch = os.path.join(pkg_gazebo_ros, 'launch', 'gz_sim.launch.py')
 
     return LaunchDescription([
 
         AppendEnvironmentVariable('GZ_SIM_RESOURCE_PATH', os.path.join(pkg, 'models')),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                os.path.join(pkg_gazebo_ros, 'launch', 'gz_sim.launch.py')),
-            # launch_arguments={'gz_args': world + ' -r -v 3 --render-engine ogre2'}.items(),
+            PythonLaunchDescriptionSource(gz_sim_launch),
+            launch_arguments={'gz_args': world + ' -r -v 3 --render-engine ogre2'}.items(),
+            condition=IfCondition(train),
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(gz_sim_launch),
             launch_arguments={'gz_args': world + ' -v 3 --render-engine ogre2'}.items(),
+            condition=UnlessCondition(train),
         ),
 
         Node(
@@ -50,8 +59,16 @@ def generate_launch_description():
             output='screen'
         ),
 
+        Node(
+            package='segway',
+            executable='optimize_pid.py',
+            output='screen',
+            condition=IfCondition(train),
+        ),
+
         Node(package='segway',
              executable='segway_control.py',
-             output='screen'
+             output='screen',
+             condition=UnlessCondition(train),
         ),
     ])
