@@ -19,7 +19,6 @@ def generate_launch_description():
     world = os.path.join(pkg, 'worlds', 'segway_world.world.sdf')
     bridge_params = os.path.join(pkg, 'config', 'ros_gz_bridge.yaml')
 
-    # reading .urdf.xacro
     xacro_file = os.path.join(pkg, 'urdf', 'robot', 'segway.urdf.xacro')
     robot_desc = xacro.process_file(xacro_file).toxml()
     gz_sim_launch = os.path.join(pkg_gazebo_ros, 'launch', 'gz_sim.launch.py')
