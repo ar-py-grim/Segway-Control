@@ -4,15 +4,15 @@ import rclpy, threading, math
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
 from geometry_msgs.msg import Twist
+from segway_control import kp, ki, kd
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 
 MAX_POINTS = 2000
 
-log_time   = []
-log_pitch  = []
+log_time = []
+log_pitch = []
 log_cmdvel = []
-t_start    = None
+t_start = None
 data_lock  = threading.Lock()
 
 
@@ -28,11 +28,11 @@ class PlotNode(Node):
         x, y, z, w = msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w
         pitch_rad = math.asin(max(-1.0, min(1.0, 2.0*(w*y - z*x))))
 
-        now = self.get_clock().now().nanoseconds * 1e-9
+        now = self.get_clock().now().nanoseconds*1e-9
         with data_lock:
             if t_start is None:
                 t_start = now
-            log_time.append(now - t_start)
+            log_time.append(now-t_start)
             log_pitch.append(math.degrees(pitch_rad))
             log_cmdvel.append(self._last_cmdvel)
             if len(log_time) > MAX_POINTS:
@@ -52,10 +52,9 @@ def main():
         target=rclpy.spin, args=(node,), daemon=True)
     spin_thread.start()
 
+    plt.ion()
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6), sharex=True)
-    fig.suptitle(f"Segway PID Response  (Kp={__import__('segway_control').kp}  "
-                 f"Ki={__import__('segway_control').ki}  Kd={__import__('segway_control').kd})"
-                 if False else "Segway Live PID Response")
+    fig.suptitle(f"Segway PID Response  (Kp={kp}  Ki={ki}  Kd={kd})")
 
     line_pitch,  = ax1.plot([], [], color='steelblue')
     line_cmdvel, = ax2.plot([], [], color='tomato')
@@ -70,29 +69,31 @@ def main():
     ax2.set_xlabel("Time (s)")
     ax2.grid(True, alpha=0.3)
 
-    def update(_):
+    if 's' in plt.rcParams['keymap.save']:
+        plt.rcParams['keymap.save'].remove('s')
+
+    while rclpy.ok() and plt.fignum_exists(fig.number):
         with data_lock:
             t = list(log_time)
             p = list(log_pitch)
             v = list(log_cmdvel)
 
-        if not t:
-            return line_pitch, line_cmdvel
+        if t:
+            line_pitch.set_data(t, p)
+            line_cmdvel.set_data(t, v)
 
-        line_pitch.set_data(t, p)
-        line_cmdvel.set_data(t, v)
+            t_now = t[-1]
+            t_min = max(0, t_now-30)
 
-        ax1.set_xlim(max(0, t[-1]-30), t[-1]+1)
-        ax2.set_xlim(max(0, t[-1]-30), t[-1]+1)
-        ax2.set_ylim(min(v)-0.5, max(v)+0.5)
+            ax1.set_xlim(t_min, t_now+1)
+            ax2.set_xlim(t_min, t_now+1)
+            ax1.set_ylim(-35, 35)
 
-        return line_pitch, line_cmdvel
+            vis_v = [v[i] for i in range(len(t)) if t[i] >= t_min]
+            if vis_v:
+                ax2.set_ylim(min(vis_v)-0.5, max(vis_v)+0.5)
 
-    ani = animation.FuncAnimation(fig, update, interval=100, blit=True)
-
-    plt.tight_layout()
-    plt.rcParams['keymap.save'].remove('s')
-    plt.show()
+        plt.pause(0.1)
 
     rclpy.shutdown()
     spin_thread.join()
