@@ -26,13 +26,14 @@ class PlotNode(Node):
     def imu_cb(self, msg):
         global t_start
         x, y, z, w = msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w
-        pitch_rad = math.asin(max(-1.0, min(1.0, 2.0*(w*y - z*x))))
+        pitch_rad = math.asin(max(-1.0, min(1.0, 2.0*(w*y-z*x))))
 
-        now = self.get_clock().now().nanoseconds*1e-9
+        now = self.get_clock().now().nanoseconds * 1e-9
         with data_lock:
             if t_start is None:
                 t_start = now
-            log_time.append(now-t_start)
+            elapsed = max(0.0, now-t_start)
+            log_time.append(elapsed)
             log_pitch.append(math.degrees(pitch_rad))
             log_cmdvel.append(self._last_cmdvel)
             if len(log_time) > MAX_POINTS:
@@ -68,6 +69,9 @@ def main():
     ax2.set_ylabel("cmd_vel (m/s)")
     ax2.set_xlabel("Time (s)")
     ax2.grid(True, alpha=0.3)
+
+    ax1.set_xlim(0, 1) 
+    ax2.set_xlim(0, 1)
 
     if 's' in plt.rcParams['keymap.save']:
         plt.rcParams['keymap.save'].remove('s')
